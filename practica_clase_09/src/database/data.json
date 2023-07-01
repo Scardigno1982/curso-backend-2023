@@ -1,0 +1,38 @@
+[
+	{
+		"id": 1,
+		"marca": "Nike",
+		"talle": 42,
+		"modelo": "Air Max"
+	},
+	{
+		"id": 2,
+		"marca": "Adidas",
+		"talle": 44,
+		"modelo": "Ultra Boost"
+	},
+	{
+		"id": 3,
+		"marca": "Puma",
+		"talle": 41,
+		"modelo": "RS-X"
+	},
+	{
+		"id": 6,
+		"marca": "Puma",
+		"talle": "45",
+		"modelo": "Pumita Top"
+	},
+	{
+		"id": 7,
+		"marca": "Topper",
+		"talle": "40",
+		"modelo": "De Lona"
+	},
+	{
+		"id": 8,
+		"marca": "Nike",
+		"talle": "42",
+		"modelo": "Bazooka k1"
+	}
+]
