@@ -16,8 +16,6 @@ server.set("views", path.join(__dirname, "views/pages/"));
 // Servir un recurso de forma estática (imagenes, PDFs, etc.)
 server.use("/public", express.static(path.join(__dirname, "public")));
 
-
-
 // Configuración de la ruta zapatillas http://127.0.0.1:3000/productos
 server.get("/productos", (req, res) => {
     res.status(200).render("productos", { zapatillas });
