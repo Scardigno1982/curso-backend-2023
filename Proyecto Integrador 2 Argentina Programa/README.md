@@ -5,7 +5,7 @@ La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual
 
 #### Especificaciones
 - Servidor: http://127.0.0.1:3005
-- Autor: tu-nombre-y-apellido
+- Autor: Sergio Scardigno
 - Versión: 1.0.8
 
 #### Requerimientos
