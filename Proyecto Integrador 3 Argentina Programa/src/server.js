@@ -1,17 +1,21 @@
 const dotenv = require('dotenv');
 dotenv.config();
+
 const express = require('express');
 const { Op } = require("sequelize");
-const sequelize = require("./conexion/connection"); // Asegúrate de que la ruta sea correcta y apunte al archivo de configuración de Sequelize
-// const Catalogo = require("./modelos/catalogo"); // Esto es solo un supuesto, no sé cómo llamaste a tu modelo
+const sequelize = require("./conexion/connection");
 
 const server = express();
-const PORT = process.env.PORT || 3000; // Puerto predeterminado 3000 si no se especifica en .env
+const PORT = 3000; // Esto forzará al servidor Express a usar el puerto 3000
 
 // Middlewares
 server.use(express.json());
 
-// Control de rutas inexistentes
+server.get('/', (req, res) => {
+    res.send('¡Bienvenido a mi aplicación!');
+});
+
+// Control de rutas inexistentes (debería estar después de todas tus rutas)
 server.use('*', (req, res) => {
     res.status(404).send({ error: `La URL indicada no existe en este servidor` });
 });
@@ -20,15 +24,17 @@ server.use('*', (req, res) => {
 sequelize.authenticate()
     .then(() => {
         console.log('Conexión a la base de datos establecida correctamente.');
-        sequelize.sync({ force: false })
-            .then(() => {
-                console.log('Sincronización de modelos completada.');
-                // Inicia tu servidor Express u otras operaciones aquí
-            })
-            .catch((error) => {
-                console.error('Hubo un problema con la sincronización de los modelos:', error);
-            });
+
+        return sequelize.sync({ force: false });
+    })
+    .then(() => {
+        console.log('Sincronización de modelos completada.');
+
+        // Inicia el servidor después de conectar y sincronizar con la base de datos
+        server.listen(PORT, () => {
+            console.log(`El servidor está corriendo en http://localhost:${PORT}`);
+        });
     })
     .catch((error) => {
-        console.error('Hubo un problema con la conexión a la base de datos:', error);
+        console.error('Hubo un problema:', error);
     });
