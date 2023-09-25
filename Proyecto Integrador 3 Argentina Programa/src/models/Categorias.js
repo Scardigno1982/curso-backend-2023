@@ -1,16 +1,27 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../conexion/connection'); // Ajusta la ruta según la ubicación de tu archivo de conexión
+// Categorias.js
 
-const Categoria = sequelize.define('Categoria', {
-    // Define los campos de la tabla categorias
-    nombre: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-}, {
-    // Opciones adicionales del modelo, como el nombre de la tabla
-    tableName: 'categorias',
-    timestamps: false // Puedes ajustar esto según tus necesidades
-});
+const { DataTypes } = require('sequelize');
 
-module.exports = Categoria;
+module.exports = function(sequelize) {
+    const Categoria = sequelize.define('Categoria', {
+        nombre: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    }, {
+        tableName: 'categorias',
+        timestamps: false,
+    });
+
+    Categoria.associate = function(models) {
+        Categoria.hasMany(models.Catalogo, {
+            foreignKey: 'id',
+            as: 'catalogos'
+        });
+    };
+
+
+
+
+    return Categoria;
+};

@@ -1,42 +1,58 @@
+// catalogoModels.js
+
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
+module.exports = (sequelize) => {
     const Catalogo = sequelize.define('Catalogo', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        poster: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
         titulo: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         categoria_id: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            references: {
+                model: 'categorias',
+                key: 'id'
+            }
         },
-        poster: {
-            type: DataTypes.STRING
+        resumen: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        temporadas: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        trailer: {
+            type: DataTypes.STRING(255),
+            allowNull: true
         }
     }, {
-        tableName: 'catalogo', // Nombre de la tabla en la base de datos
-        timestamps: false, // Desactiva el registro de timestamps (created_at, updated_at)
+        tableName: 'catalogo',
+        timestamps: false
     });
 
-    Catalogo.associate = function(models) {
-        // Relación con la tabla 'categorias'
-        Catalogo.belongsTo(models.Categorias, {
-            foreignKey: 'categoria_id',
-            as: 'categoria'
-        });
-
-        // Relación con la tabla 'catalogo_genero' a través de 'genero_id'
+    Catalogo.associate = (models) => {
         Catalogo.belongsToMany(models.Genero, {
+            as: 'generos',
             through: 'catalogo_genero',
             foreignKey: 'catalogo_id',
-            as: 'generos'
+            otherKey: 'genero_id',
+            timestamps: false
         });
 
-        // Relación con la tabla 'catalogo_reparto' a través de 'actor_id'
-        Catalogo.belongsToMany(models.ActricesYActores, {
-            through: 'catalogo_reparto',
-            foreignKey: 'catalogo_id',
-            as: 'reparto'
+        Catalogo.belongsTo(models.Categorias, {
+            as: 'categoria',
+            foreignKey: 'categoria_id'
         });
     };
 
