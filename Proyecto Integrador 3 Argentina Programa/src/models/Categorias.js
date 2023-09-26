@@ -1,4 +1,3 @@
-// Categorias.js
 
 const { DataTypes } = require('sequelize');
 

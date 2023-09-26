@@ -1,4 +1,3 @@
-//generoModels.js
 
 const { DataTypes } = require('sequelize');
 

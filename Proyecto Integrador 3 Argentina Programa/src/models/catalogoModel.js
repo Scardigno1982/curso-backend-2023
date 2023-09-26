@@ -1,4 +1,3 @@
-// catalogoModels.js
 
 const { DataTypes } = require('sequelize');
 

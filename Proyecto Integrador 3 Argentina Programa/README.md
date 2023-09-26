@@ -1,7 +1,9 @@
 # Proyecto Integrador N°3: Trailerflix
 
-El presente documento, es el **Proyecto Integral N°2** de ***Argentina Program 4.0***. Esta es una pequeña solución informática que sirve registrar los muebles de una mueblería.
-La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual está desarrollada bajo las restricciones y recomendaciones de REST, además, implementa buenas prácticas de programación.
+El presente documento, es el **Proyecto Integral N°3** de ***Argentina Program 4.0***. Esta es una pequeña aplicación
+que muestra un pequeño catalogo de peliculas cargadas en una base de datos.
+La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual está desarrollada bajo las 
+restricciones y recomendaciones de REST, además, implementa buenas prácticas de programación.
 
 #### Especificaciones
 - Servidor: http://127.0.0.1:3000
@@ -66,45 +68,125 @@ La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual
 | GET | http://127.0.0.1:3000/catalogo/categoria/:categoria | Filtra por categoría (serie, película, etc.) |
 
 
-#### Método GET:
+#### Método GET - Específico:
 - Request:
-    - Parámetros opcionales de tipo QUERY:
-        - categoria=Oficina  *(tipo: string. Trae los muebles de una misma categoría)*
-        - precio_gte=500.00  *(tipo: decimal. Trae los muebles que tienen un precio mayor o igual a $500)*
-        - precio_lte=400.00  *(tipo: decimal. Trae los muebles que tienen un precio menor o igual a $400)*
-- Response:
-    ``` json
-        [
+        - /categorias
+  - Response:
+      ``` json
+          [
             {
-                "_id": "64b082dabbbdbf35047fd6b6",
-                "codigo": 7,
-                "nombre": "Cama individual",
-                "precio": 399.99,
-                "categoria": "Dormitorio"
+                "id": 1,
+                "nombre": "Serie"
+            },
+            {
+                "id": 2,
+                "nombre": "Película"
             }
-        ]
-    ```
-    - Código HTTP: **200** *payload: muebles*
-    - Código HTTP: **500** *message: Se ha generado un error en el servidor*
+          ]
+      ```
+      - Código HTTP: **404** *message: No se encontraron categorías*
+      - Código HTTP: **500** *message: Error al obtener categorías*
 
 
 #### Método GET - Específico:
 - Request:
-    - Parámetro obligatorio de tipo URL:
-        - 9 *(tipo: integer. Indica el código del mueble que se requiere obtener)*
+    - /catalogo
 - Response:
     ``` json
         {
-              "_id": "64b082dabbbdbf35047fd6b7",
-              "codigo": 9,
-              "nombre": "Mesa de Comedor de Madera",
-              "precio": 299.99,
-              "categoria": "Comedor"
+                "id": 1,
+                "poster": "/posters/1.jpg",
+                "titulo": "The Crown",
+                "categoria_id": 1,
+                "resumen": "Este drama narra las rivalidades políticas y el romance de la reina Isabel II, así como los sucesos que moldearon la segunda mitad del siglo XX.",
+                "temporadas": 4,
+                "trailer": "NULL"
         }
     ```
-    - Código HTTP: **200** *payload: mueble*
-    - Código HTTP: **400** *message: El código no corresponde a un mueble registrado*
-    - Código HTTP: **500** *message: Se ha generado un error en el servidor*
+    - Código HTTP: **404** *message: No se encontraron elementos en el catálogo*
+    - Código HTTP: **500** *message: Error al obtener el catálogo*
 
+#### Método GET - Específico:
+- Request:
+  - /catalogo/:id
+- Response:
+    ``` json
+        {
+                "id": 1,
+                "poster": "/posters/1.jpg",
+                "titulo": "The Crown",
+                "categoria_id": 1,
+                "resumen": "Este drama narra las rivalidades políticas y el romance de la reina Isabel II, así como los sucesos que moldearon la segunda mitad del siglo XX.",
+                "temporadas": 4,
+                "trailer": "NULL"
+        }
+    ```
+  - Código HTTP: **404** *message: Película o serie no encontrada*
+  - Código HTTP: **500** *message: Error al obtener la película o serie*
 
+#### Método GET - Específico:
+- Request:
+  - /catalogo/nombre/:nombre
+    - Response:
+        ``` json
+            {
+                  "id": 3,
+                  "poster": "/posters/3.jpg",
+                  "titulo": "The Mandalorian",
+                  "categoria_id": 1,
+                  "resumen": "Ambientada tras la caída del Imperio y antes de la aparición de la Primera Orden, la serie sigue los pasos de un pistolero solitario en las aventuras que protagoniza en los confines de la galaxia, donde no alcanza la autoridad de la Nueva República.",
+                  "temporadas": 2,
+                  "trailer": "https://www.youtube.com/embed/aOC8E8z_ifw"
+            }
+        ```
+      - Código HTTP: **404** *message: No se encontraron películas o series con el nombre*
+      - Código HTTP: **500** *message: Error al obtener las películas o series por nombre*
 
+#### Método GET - Específico:
+- Request:
+  - /catalogo/genero/:genero
+    - Response:
+        ``` json
+            {
+        "id": 7,
+        "poster": "/posters/7.jpg",
+        "titulo": "Guasón",
+        "categoria_id": 2,
+        "resumen": "Arthur Fleck (Phoenix) es un hombre ignorado por la sociedad, cuya motivación en la vida es hacer reír. Pero una serie de trágicos acontecimientos le llevarán a ver el mundo de otra forma. Película basada en el popular personaje de DC Comics Joker, conocido como archivillano de Batman, pero que en este film tomará un cariz más realista y oscuro.",
+        "temporadas": null,
+        "trailer": "https://www.youtube.com/embed/zAGVQLHvwOY",
+        "generos": [
+            {
+                "id": 4,
+                "nombre": "Suspenso",
+                "catalogo_genero": {
+                    "genero_id": 4,
+                    "catalogo_id": 7
+                }
+            }
+            }
+        ```
+      - Código HTTP: **404** *message: No se encontraron películas o series para el género especificado.*
+      - Código HTTP: **500** *message: Error al obtener las películas o series por género*
+
+#### Método GET - Específico:
+- Request:
+  - /catalogo/categoria/:categoria
+    - Response:
+        ``` json
+            {
+                "id": 6,
+                "poster": "/posters/6.jpg",
+                "titulo": "Enola Holmes",
+                "categoria_id": 2,
+                "resumen": "La hermana menor de Sherlock, descubre que su madre ha desaparecido y se dispone a encontrarla. En su búsqueda, saca a relucir el sabueso que corre por sus venas y se encuentra con una conspiración que gira en torno a un misterioso lord, demostrando que su ilustre hermano no es el único talento en la familia.",
+                "temporadas": null,
+                "trailer": "NULL",
+                "categoria": {
+                    "id": 2,
+                    "nombre": "Película"
+                }
+            }
+        ```
+      - Código HTTP: **404** *message: No se encontraron películas o series para la categoría especificada*
+      - Código HTTP: **500** *message: Error al obtener las películas o series por categoría*

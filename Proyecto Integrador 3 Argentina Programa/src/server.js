@@ -1,23 +1,34 @@
+// Importa el módulo dotenv para manejar variables de entorno
 const dotenv = require('dotenv');
+// Configura dotenv para cargar las variables de entorno desde el archivo .env
 dotenv.config();
 
+// Importa el módulo Express para crear y manejar el servidor web
 const express = require('express');
 
-const sequelize = require('./conexion/connection'); // Importa la conexión Sequelize
+// Importa la configuración y conexión de Sequelize a la base de datos
+const sequelize = require('./conexion/connection');
+
+// Importa el operador `Op` de Sequelize para hacer consultas personalizadas
 const { Op } = require('sequelize');
 
+// Define los modelos de datos usando la conexión de Sequelize
 const Genero = require('./models/generoModel')(sequelize);
 const Categorias = require('./models/categorias')(sequelize);
 const Catalogo = require('./models/catalogoModel')(sequelize);
-const CatalogoGenero = require('./models/catalogoGeneroModel')(sequelize); // Añade esta línea
+// Define el modelo de relación entre Catálogo y Género
+const CatalogoGenero = require('./models/catalogoGeneroModel')(sequelize);
 
+// Asocia los modelos entre sí para definir relaciones (como las relaciones de llave foránea)
 Genero.associate({ Catalogo, CatalogoGenero });
 Catalogo.associate({ Genero, Categorias });
 
-
-
+// Inicializa el servidor Express
 const server = express();
-const PORT = 3000; // Esto forzará al servidor Express a usar el puerto 3000
+
+// Define el puerto en el que correrá el servidor Express
+const PORT = 3000;
+
 
 
 // Middlewares
@@ -33,6 +44,12 @@ server.get('/categorias', async (req, res) => {
         console.log('Antes de consultar categorías');
         const categorias = await Categorias.findAll();
         console.log('Después de consultar categorías');
+
+        // Si no hay categorías, devuelve un error 404
+        if (categorias.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron categorías' });
+        }
+
         res.json(categorias);
     } catch (error) {
         console.error('Error al obtener categorías:', error);
@@ -44,12 +61,19 @@ server.get('/categorias', async (req, res) => {
 server.get('/catalogo', async (req, res) => {
     try {
         const catalogo = await Catalogo.findAll();
+
+        // Si no hay elementos en el catálogo, devuelve un error 404
+        if (catalogo.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron elementos en el catálogo' });
+        }
+
         res.json(catalogo);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener el catálogo' });
     }
 });
+
 
 // Filtrar por código de la película/serie
 server.get('/catalogo/:id', async (req, res) => {
@@ -77,12 +101,19 @@ server.get('/catalogo/nombre/:nombre', async (req, res) => {
                 },
             },
         });
+
+        // Si no hay películas o series con ese nombre, devuelve un error 404
+        if (peliculasSeries.length === 0) {
+            return res.status(404).json({ error: `No se encontraron películas o series con el nombre: ${nombre}` });
+        }
+
         res.json(peliculasSeries);
     } catch (error) {
         console.error('Error al obtener las películas o series por nombre:', error);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 // Endpoint para obtener películas o series por género
 server.get('/catalogo/genero/:genero', async (req, res) => {
@@ -145,8 +176,6 @@ server.get('/catalogo/categoria/:categoria', async (req, res) => {
 server.use('*', (req, res) => {
     res.status(404).send({ error: `La URL indicada no existe en este servidor` });
 });
-
-
 
 // Método oyente de solicitudes
 sequelize
